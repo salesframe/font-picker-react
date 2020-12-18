@@ -95,7 +95,7 @@ var FontPicker = (function (_super) {
             _this.fontManager.setActiveFont(activeFontFamily);
         };
         _this.generateFontList = function (fonts) {
-            var _a = _this.props, activeFontFamily = _a.activeFontFamily, listClassName = _a.listClassName;
+            var _a = _this.props, activeFontFamily = _a.activeFontFamily, listClassName = _a.listClassName, activeClassName = _a.activeClassName;
             var _b = _this.state, loadingStatus = _b.loadingStatus, searchValue = _b.searchValue;
             if (loadingStatus !== "finished") {
                 return React.createElement("div", null);
@@ -105,7 +105,7 @@ var FontPicker = (function (_super) {
                 var isActive = font.family === activeFontFamily;
                 var fontId = getFontId(font.family);
                 return (React.createElement("li", { key: fontId, className: "font-list-item " + listClassName },
-                    React.createElement("button", { type: "button", id: "font-button-" + fontId + _this.fontManager.selectorSuffix, className: "font-button " + (isActive ? "active-font" : ""), onClick: _this.onSelection, onKeyPress: _this.onSelection }, font.family)));
+                    React.createElement("button", { type: "button", id: "font-button-" + fontId + _this.fontManager.selectorSuffix, className: "font-button " + (isActive ? "active-font " + activeClassName : ""), onClick: _this.onSelection, onKeyPress: _this.onSelection }, font.family)));
             })));
         };
         _this.toggleExpanded = function () {
@@ -141,7 +141,7 @@ var FontPicker = (function (_super) {
                     React.createElement("p", { className: "dropdown-icon " + loadingStatus }))) : expanded && isSearchable ? (React.createElement("input", { type: "text", className: "search-value " + inputClassName, value: searchValue, onChange: function (event) { return _this.handleSearchValueChage(event.target.value); } })) : null,
                 loadingStatus === "finished" && _this.generateFontList(fonts)));
         };
-        var _a = _this.props, apiKey = _a.apiKey, activeFontFamily = _a.activeFontFamily, pickerId = _a.pickerId, families = _a.families, categories = _a.categories, scripts = _a.scripts, variants = _a.variants, filter = _a.filter, limit = _a.limit, sort = _a.sort, onChange = _a.onChange, inputClassName = _a.inputClassName, listClassName = _a.listClassName, isSearchable = _a.isSearchable, rootClassName = _a.rootClassName;
+        var _a = _this.props, apiKey = _a.apiKey, activeFontFamily = _a.activeFontFamily, pickerId = _a.pickerId, families = _a.families, categories = _a.categories, scripts = _a.scripts, variants = _a.variants, filter = _a.filter, limit = _a.limit, sort = _a.sort, onChange = _a.onChange, inputClassName = _a.inputClassName, listClassName = _a.listClassName, isSearchable = _a.isSearchable, rootClassName = _a.rootClassName, activeClassName = _a.activeClassName;
         var options = {
             pickerId: pickerId,
             families: families,
@@ -154,7 +154,8 @@ var FontPicker = (function (_super) {
             inputClassName: inputClassName,
             listClassName: listClassName,
             isSearchable: isSearchable,
-            rootClassName: rootClassName
+            rootClassName: rootClassName,
+            activeClassName: activeClassName
         };
         _this.fontManager = new FontManager(apiKey, activeFontFamily, options, onChange);
         return _this;
@@ -174,6 +175,7 @@ var FontPicker = (function (_super) {
         listClassName: OPTIONS_DEFAULTS.listClassName,
         isSearchable: OPTIONS_DEFAULTS.isSearchable,
         rootClassName: OPTIONS_DEFAULTS.rootClassName,
+        activeClassName: OPTIONS_DEFAULTS.activeClassName
     };
     return FontPicker;
 }(PureComponent));
