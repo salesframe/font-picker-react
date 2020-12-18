@@ -18,6 +18,7 @@ interface Props {
     isSearchable: boolean;
     rootClassName: string;
     activeClassName: string;
+    buttonClassName: string;
 }
 interface State {
     expanded: boolean;
@@ -42,6 +43,7 @@ export default class FontPicker extends PureComponent<Props, State> {
         isSearchable: boolean;
         rootClassName: string;
         activeClassName: string;
+        buttonClassName: string;
     };
     state: Readonly<State>;
     constructor(props: Props);

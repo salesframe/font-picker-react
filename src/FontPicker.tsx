@@ -34,6 +34,7 @@ interface Props {
 	isSearchable: boolean,
 	rootClassName: string,
 	activeClassName: string;
+	buttonClassName: string;
 }
 
 interface State {
@@ -68,7 +69,8 @@ export default class FontPicker extends PureComponent<Props, State> {
 		listClassName: OPTIONS_DEFAULTS.listClassName,
 		isSearchable: OPTIONS_DEFAULTS.isSearchable,
 		rootClassName: OPTIONS_DEFAULTS.rootClassName,
-		activeClassName: OPTIONS_DEFAULTS.activeClassName
+		activeClassName: OPTIONS_DEFAULTS.activeClassName,
+		buttonClassName: OPTIONS_DEFAULTS.buttonClassName
 	};
 
 	state: Readonly<State> = {
@@ -97,6 +99,7 @@ export default class FontPicker extends PureComponent<Props, State> {
 			isSearchable,
 			rootClassName,
 			activeClassName,
+			buttonClassName,
 		} = this.props;
 
 		const options: Options = {
@@ -112,7 +115,8 @@ export default class FontPicker extends PureComponent<Props, State> {
 			listClassName,
 			isSearchable,
 			rootClassName,
-			activeClassName
+			activeClassName,
+			buttonClassName,
 		};
 
 		// Initialize FontManager object
@@ -207,7 +211,6 @@ export default class FontPicker extends PureComponent<Props, State> {
 	generateFontList = (fonts: Font[]): ReactElement => {
 		const { activeFontFamily, listClassName, activeClassName } = this.props;
 		const { loadingStatus, searchValue } = this.state;
-
 		if (loadingStatus !== "finished") {
 			return <div />;
 		}
@@ -266,7 +269,7 @@ export default class FontPicker extends PureComponent<Props, State> {
 	}
 
 	render = (): ReactElement => {
-		const { activeFontFamily, sort, isSearchable, inputClassName, rootClassName } = this.props;
+		const { activeFontFamily, sort, isSearchable, inputClassName, rootClassName, buttonClassName } = this.props;
 		const { expanded, loadingStatus, searchValue } = this.state;
 
 		// Extract and sort font list
@@ -285,7 +288,7 @@ export default class FontPicker extends PureComponent<Props, State> {
 					!expanded ? (
 						<button
 							type="button"
-							className="dropdown-button"
+							className={`dropdown-button ${buttonClassName}`}
 							onClick={this.toggleExpanded}
 							onKeyPress={this.toggleExpanded}
 						>
