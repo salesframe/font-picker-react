@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 import FontPicker from "../dist/FontPicker.es";
 
-const API_KEY = "AIzaSyAOkdDlx49HCSBdu86oe8AD1Q7piIxlR6k";
+const API_KEY = "AIzaSyCMhKQfRBkGxXbzwx3n01GjCU_gFyFYpJU";
 
 function OnePicker() {
 	const [activeFontFamily, setActiveFontFamily] = useState("Open Sans");

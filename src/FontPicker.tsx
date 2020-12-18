@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
 	Category,
 	Font,
@@ -28,11 +29,17 @@ interface Props {
 	filter: (font: Font) => boolean;
 	limit: number;
 	sort: SortOption;
+	inputClassName: string,
+	listClassName: string,
+	isSearchable: boolean,
+	rootClassName: string,
+	activeClassName: string;
 }
 
 interface State {
 	expanded: boolean;
 	loadingStatus: LoadingStatus;
+	searchValue: string,
 }
 
 /**
@@ -57,11 +64,17 @@ export default class FontPicker extends PureComponent<Props, State> {
 		filter: OPTIONS_DEFAULTS.filter,
 		limit: OPTIONS_DEFAULTS.limit,
 		sort: OPTIONS_DEFAULTS.sort,
+		inputClassName: OPTIONS_DEFAULTS.inputClassName,
+		listClassName: OPTIONS_DEFAULTS.listClassName,
+		isSearchable: OPTIONS_DEFAULTS.isSearchable,
+		rootClassName: OPTIONS_DEFAULTS.rootClassName,
+		activeClassName: OPTIONS_DEFAULTS.activeClassName
 	};
 
 	state: Readonly<State> = {
 		expanded: false,
 		loadingStatus: "loading",
+		searchValue: "",
 	};
 
 	constructor(props: Props) {
@@ -79,6 +92,11 @@ export default class FontPicker extends PureComponent<Props, State> {
 			limit,
 			sort,
 			onChange,
+			inputClassName,
+			listClassName,
+			isSearchable,
+			rootClassName,
+			activeClassName,
 		} = this.props;
 
 		const options: Options = {
@@ -90,6 +108,11 @@ export default class FontPicker extends PureComponent<Props, State> {
 			filter,
 			limit,
 			sort,
+			inputClassName,
+			listClassName,
+			isSearchable,
+			rootClassName,
+			activeClassName
 		};
 
 		// Initialize FontManager object
@@ -182,24 +205,28 @@ export default class FontPicker extends PureComponent<Props, State> {
 	 * Generate <ul> with all font families
 	 */
 	generateFontList = (fonts: Font[]): ReactElement => {
-		const { activeFontFamily } = this.props;
-		const { loadingStatus } = this.state;
+		const { activeFontFamily, listClassName, activeClassName } = this.props;
+		const { loadingStatus, searchValue } = this.state;
 
 		if (loadingStatus !== "finished") {
 			return <div />;
 		}
+
+		const filteredFonts = fonts.filter((currentFont:Font) => (
+			currentFont.family.toLowerCase().startsWith(searchValue.toLowerCase())
+		))
 		return (
 			<ul className="font-list">
-				{fonts.map(
+				{filteredFonts.map(
 					(font): ReactElement => {
 						const isActive = font.family === activeFontFamily;
 						const fontId = getFontId(font.family);
 						return (
-							<li key={fontId} className="font-list-item">
+							<li key={fontId} className={`font-list-item ${listClassName}`}>
 								<button
 									type="button"
 									id={`font-button-${fontId}${this.fontManager.selectorSuffix}`}
-									className={`font-button ${isActive ? "active-font" : ""}`}
+									className={`font-button ${isActive ? `active-font ${activeClassName}` : ""}`}
 									onClick={this.onSelection}
 									onKeyPress={this.onSelection}
 								>
@@ -232,9 +259,15 @@ export default class FontPicker extends PureComponent<Props, State> {
 		}
 	};
 
+	handleSearchValueChage = (searchValue:string):void => {
+		this.setState({
+			searchValue,
+		})
+	}
+
 	render = (): ReactElement => {
-		const { activeFontFamily, sort } = this.props;
-		const { expanded, loadingStatus } = this.state;
+		const { activeFontFamily, sort, isSearchable, inputClassName, rootClassName } = this.props;
+		const { expanded, loadingStatus, searchValue } = this.state;
 
 		// Extract and sort font list
 		const fonts = Array.from(this.fontManager.getFonts().values());
@@ -246,17 +279,28 @@ export default class FontPicker extends PureComponent<Props, State> {
 		return (
 			<div
 				id={`font-picker${this.fontManager.selectorSuffix}`}
-				className={expanded ? "expanded" : ""}
+				className={`${expanded ? "expanded" : ""} ${rootClassName}`}
 			>
-				<button
-					type="button"
-					className="dropdown-button"
-					onClick={this.toggleExpanded}
-					onKeyPress={this.toggleExpanded}
-				>
-					<p className="dropdown-font-family">{activeFontFamily}</p>
-					<p className={`dropdown-icon ${loadingStatus}`} />
-				</button>
+				{
+					!expanded ? (
+						<button
+							type="button"
+							className="dropdown-button"
+							onClick={this.toggleExpanded}
+							onKeyPress={this.toggleExpanded}
+						>
+							<p className="dropdown-font-family">{activeFontFamily}</p>
+							<p className={`dropdown-icon ${loadingStatus}`} />
+						</button>
+					) : expanded && isSearchable ? (
+						<input
+							type="text"
+							className={`search-value ${inputClassName}`}
+							value={searchValue}
+							onChange={(event:any):void => this.handleSearchValueChage(event.target.value)}
+						/>
+					) : null
+				}
 				{loadingStatus === "finished" && this.generateFontList(fonts)}
 			</div>
 		);
